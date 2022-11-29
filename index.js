@@ -23,6 +23,7 @@ var minScore = 10
 var numberOfItems = 0
 var numberOfDestroyedItems = 0
 var failed = false
+var finalTextDrawn = false
 
 var alphaValue = 0
 
@@ -46,12 +47,21 @@ function draw() {
             fill(166, 166, 166, alphaValue)
             rect(0, 0, canvasWidth, canvasHeight)
             alphaValue++
-            console.log(alphaValue)
         }
-        else {
+        else if (!finalTextDrawn) {
+            finalTextDrawn = true
             fill(0)
             textSize(50)
-            text(`Your final score: ${numberOfDestroyedItems}`, 300, canvasHeight/2)
+            text(`Your final score is ${numberOfDestroyedItems}`, 280, canvasHeight/2)
+            textSize(30)
+            var highscore = JSON.parse(localStorage.getItem('h'))
+            if(!highscore) {
+                highscore = 0
+            }
+            text(`Your highscore is ${highscore}`, 370, canvasHeight/2+50)
+            if (highscore<numberOfDestroyedItems) {
+                localStorage.setItem('h', numberOfDestroyedItems.toString())
+            }     
         }
         return
     }
@@ -86,7 +96,6 @@ function draw() {
         items[name]['y'] += data['speed']
         if (checkCollision(item.width*itemSize, item.height*itemSize, data['x'], items[name]['y'])) {
             numberOfDestroyedItems++
-            console.log(numberOfDestroyedItems)
             delete items[name]
             continue
         }
@@ -99,7 +108,7 @@ function draw() {
     }
 
     textSize(30)
-    text(`Score: ${numberOfDestroyedItems}`, canvasWidth-200, 30)
+    text(`Score: ${numberOfDestroyedItems}`, canvasWidth-180, 30)
 }
 
 function spawnItem() {
@@ -115,11 +124,20 @@ function spawnItem() {
 
 function checkCollision(w, h, x, y) {
     var smX = samuPosX-samu.width*samuSize/2
-    //console.log(w, h, x, y, '-----', samuPosX, samuPosY, samuPosX+samu.width*samuSize, samuPosY+samu.height*samuSize)
+
     var inXRange = (x < smX && x+w > smX) || (x > smX && x < smX+samu.width*samuSize)
     var inYRange = (y < samuPosY && y+h > samuPosY) || (y > samuPosY && y < samuPosY+samu.height*samuSize)
+
     if (inXRange && inYRange) {
         return true
     }
     return false
+}
+
+function mouseClicked() {
+    checkButtonClick()
+}
+
+function checkButtonClick(x, y, w, h) {
+
 }
