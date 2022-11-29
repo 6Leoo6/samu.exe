@@ -27,6 +27,14 @@ var finalTextDrawn = false
 
 var alphaValue = 0
 
+var buttons = {'retry': {
+    'f': retry,
+    'w': 100,
+    'h': 50,
+    'x': canvasWidth/2-50,
+    'y': canvasHeight/2+100,
+    't': 'end'
+}}
 
 function preload() {
     samu = loadImage('assets/samu.jpg')
@@ -52,16 +60,24 @@ function draw() {
             finalTextDrawn = true
             fill(0)
             textSize(50)
-            text(`Your final score is ${numberOfDestroyedItems}`, 280, canvasHeight/2)
+            text(`A végső pontod ${numberOfDestroyedItems}`, 300, canvasHeight/2)
             textSize(30)
+
             var highscore = JSON.parse(localStorage.getItem('h'))
             if(!highscore) {
                 highscore = 0
             }
-            text(`Your highscore is ${highscore}`, 370, canvasHeight/2+50)
+
+            text(`A legjobb ereményed ${highscore}`, 340, canvasHeight/2+50)
+
             if (highscore<numberOfDestroyedItems) {
                 localStorage.setItem('h', numberOfDestroyedItems.toString())
-            }     
+            }
+            
+            fill(0)
+            rect(canvasWidth/2-50, canvasHeight/2+100, 100, 50)
+            fill(255)
+            text('Újra', canvasWidth/2-27, canvasHeight/2+135)
         }
         return
     }
@@ -108,7 +124,8 @@ function draw() {
     }
 
     textSize(30)
-    text(`Score: ${numberOfDestroyedItems}`, canvasWidth-180, 30)
+    fill(255)
+    text(`Pont: ${numberOfDestroyedItems}`, canvasWidth-180, 30)
 }
 
 function spawnItem() {
@@ -138,5 +155,25 @@ function checkButtonClick(x, y, w, h) {
 }
 
 function mouseClicked() {
-    checkButtonClick()
+    var result
+    for (const [key, value] of Object.entries(buttons)) {
+        if(value.t == 'end' && !failed) {
+            continue
+        }
+        result = checkButtonClick(value.x, value.y, value.w, value.h)
+        if(result) {
+            value.f()
+        }
+    }
+}
+
+function retry() {
+    items = {}
+    timeUntilSpawn = 1000/spawnRate
+    numberOfItems = 0
+    numberOfDestroyedItems = 0
+    failed = false
+    finalTextDrawn = false
+    alphaValue = 0
+    samuPosX = 0
 }
