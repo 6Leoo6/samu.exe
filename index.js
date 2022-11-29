@@ -128,16 +128,15 @@ function checkCollision(w, h, x, y) {
     var inXRange = (x < smX && x+w > smX) || (x > smX && x < smX+samu.width*samuSize)
     var inYRange = (y < samuPosY && y+h > samuPosY) || (y > samuPosY && y < samuPosY+samu.height*samuSize)
 
-    if (inXRange && inYRange) {
-        return true
-    }
-    return false
+    return inXRange && inYRange
+}
+
+function checkButtonClick(x, y, w, h) {
+    var inXRange = x < mouseX && x+w > mouseX
+    var inYRange = (y < mouseY && y+h > mouseY)
+    return inXRange && inYRange
 }
 
 function mouseClicked() {
     checkButtonClick()
-}
-
-function checkButtonClick(x, y, w, h) {
-
 }
